@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require("../db/conn")
 const User =require('../model/userSchema')
-
+const authenticate = require('../middleware/authenticate')
 router.get('/',(req,res)=>{
     res.send("This is home from router")
 })
@@ -57,10 +57,10 @@ router.post('/api/register',async(req,res)=>{
 
 })
 
-router.post('/signin',async (req,res)=>{
+router.post('/api/login',async (req,res)=>{
     try{
     const {email,password}=req.body
-    
+    console.log(email)
     if( !email  || !password )
     {
         return res.status(422).json({error:"Fill properly"})
@@ -94,6 +94,42 @@ router.post('/signin',async (req,res)=>{
     }
 
 
+})
+
+router.get('/api/about',authenticate,(req,res)=>{
+    res.send(req.rootUser);
+})
+router.post('/api/alldata',async(req,res)=>{
+    const {_id,name,email}=req.body
+    // const data =await User.find(name)
+    console.log(name)
+    // console.log("ashim daka")
+    // console.log(data[0])
+    res.send("message reciverd")
+    
+})
+router.get('/api/getdata',authenticate,async(req,res)=>{
+    
+   
+    res.send(req.rootUser)
+    
+})
+
+router.post('/api/contact',authenticate,async(req,res)=>{
+    const {name,phone,email,message} =await req.body
+    const user = await User.findOne({_id:req.UserID})
+    if(user){
+        const saveUser = await user.addmessage(name,phone,email,message)
+        // user.save()
+        console.log("ashim daka")
+        return res.status(202).json({message:"user created successfully"})
+    }
+    res.status(202).json({message:"recived data but couldn't post"})
+})
+
+router.get('/api/logout',(req,res)=>{
+    res.clearCookie('jwtoken',{path:'/'})
+    res.status(200).json({message:"Logout successfull"})
 })
 
 module.exports = router

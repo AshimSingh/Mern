@@ -2,8 +2,9 @@ import React from 'react'
 import './Register.css'
 import { useState} from 'react'
 // import {useHistory} from 'react-router-dom'
+import { useNavigate } from "react-router-dom"
 const Register = () => {
-  // const history =useHistory()
+  const history =useNavigate()
   const [form,setfrom]=useState({
     name:"",
     email:"",
@@ -22,7 +23,6 @@ const Register = () => {
   const PostData =async (e)=>{
 
     e.preventDefault()
-    console.log(form)
     const {name,email,work,phone,password,cpass}=form
     const res = await fetch("/api/register",{
     

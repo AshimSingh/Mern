@@ -1,8 +1,10 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { UserContext } from '../App'
 
 function Navbar() {
+    const {state,dispatch} =useContext(UserContext)
     const [isOpen,setOpen]=useState(false)
     const changeState=(isOpen)=>{
         setOpen(!isOpen)
@@ -27,6 +29,10 @@ function Navbar() {
         {
             name:"Login",
             link:"/signin"
+        },
+        {
+            name:"Logout",
+            link:'/logout'
         }
 
     ]
@@ -44,9 +50,15 @@ function Navbar() {
 
      <ul className={`flex md:flex-row  flex-col items-center transistion-all duration-500 ease-out ${isOpen ? 'flex':'md:flex hidden'}`}>
      {
-        items.map((data)=>{
+        items.map((data,index)=>{
+            if(data.name==="Logout" && !state){
+                return null
+            }
+            else if((data.name==='Login' || data.name==='Register')&& state){
+                return null
+            }
             return(
-                <Link to={`${data.link}`} className='mx-3 md:my-0 my-2 font-semibold cursor-pointer' onClick={()=>changeState(isOpen)}>{data.name}</Link>
+                <Link key={index} to={`${data.link}`} className='mx-3 md:my-0 my-2 font-semibold cursor-pointer' onClick={()=>changeState(isOpen)}>{data.name}</Link>
             )
         })
         

@@ -1,6 +1,37 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 const About = () => {
+  const navigate = useNavigate()
+  const [data,setdata]=useState({})
+  const callAboutpage=async()=>{
+    
+    try{
+      const res = await fetch('/api/about',{
+        method:"GET",
+        headers:{
+          Accept:"application/json",
+          "Content-Type":"application/json"
+        },
+        credentials:'include'
+      })
+      const data = await res.json()
+      setdata(data)
+      if(!res.status==200){
+        const error = new Error (res.error)
+        throw error
+      }
+
+    }catch(err){
+      console.log(err)
+      navigate('/signin')
+    }
+
+  }
+  useEffect(()=>{
+    callAboutpage();
+  },[])
   
   const links=[
     {
@@ -16,6 +47,7 @@ const About = () => {
   const changelink=(link)=>{
     setLink(link)
   }
+  const {name,id,email,work,phone} =data
   return (
     <div className='navmargin'>
        <div className='h-full flex justify-center items-center '>
@@ -36,8 +68,8 @@ const About = () => {
           <div className='col-span-2  p-3'>
             <div className='flex justify-between'>
             <div>
-            <h1 className='text-gray-400 text-3xl'>Ashim Thapa</h1>
-            <h1 className='text-blue-400 text-xl'>Web developer</h1>
+            <h1 className='text-gray-400 text-3xl'>{name}</h1>
+            <h1 className='text-blue-400 text-xl'>{work}</h1>
             <h1 className='text-gray-400 text-xl mt-2'>Ratings: 5/10</h1>
             </div>
             <div><button className='bg-blue-400 p-2 text-white'>Edit info</button></div>
@@ -57,7 +89,7 @@ const About = () => {
               </div>
 
               <div className=' md:w-[85%] mt-3'>
-                {link=="About"?<Aboutcontent/>:""}
+                {link=="About"?<Aboutcontent data={data}  />:""}
                 {link=="Timeline"?<Timeline/>:""}    
                     
                   
@@ -76,27 +108,29 @@ const Timeline=()=>{
     <div>hello ashim</div>
   )
 }
-const Aboutcontent= ()=>{
+const Aboutcontent= ({data})=>{
+  
+  const {name,_id,email,work,phone} =data
   return(
     <div>
     <div className='grid grid-cols-3 mt-2'>
   <h1 className='text-gray-700 font-semibold   col-span-2'>User Id</h1>
-  <h1 className='text-blue-400  '>123456789</h1>
+  <h1 className='text-blue-400  '>{_id}</h1>
 
 </div>
 <div className='grid grid-cols-3 mt-2'>
-  <h1 className='text-gray-700 font-semibold   col-span-2'>Ashim Thapa</h1>
-  <h1 className='text-blue-400  '>Web developer</h1>
+  <h1 className='text-gray-700 font-semibold   col-span-2'>{name}</h1>
+  <h1 className='text-blue-400  '>{work}</h1>
 </div>
 
 <div className='grid grid-cols-3 mt-2'>
-  <h1 className='text-gray-700 font-semibold   col-span-2'>Ashim Thapa</h1>
-  <h1 className='text-blue-400  '>Web developer</h1>
+  <h1 className='text-gray-700 font-semibold   col-span-2'>Email</h1>
+  <h1 className='text-blue-400  '>{email}</h1>
 </div>
 
 <div className='grid grid-cols-3 mt-2'>
-  <h1 className='text-gray-700 font-semibold   col-span-2'>Ashim Thapa</h1>
-  <h1 className='text-blue-400  '>Web developer</h1>
+  <h1 className='text-gray-700 font-semibold   col-span-2'>Phone</h1>
+  <h1 className='text-blue-400  '>{phone}</h1>
 </div>
 </div>
   )

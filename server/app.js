@@ -11,24 +11,27 @@ const DB= process.env.DATABASE
 const PORT = process.env.PORT
 app.use(express.json())
 require('./db/conn')
+var cookieParser = require('cookie-parser')
+app.use(cookieParser())
 app.use(require('./router/auth'))
 
-const middleware =(req,res,next)=>{
-    console.log("hello i am middleware")
-    next();
-}
+
+// const middleware =(req,res,next)=>{
+//     console.log("hello i am middleware")
+//     next();
+// }
 app.get('/',(req,res)=>{
     res.send("Hello ashim world")
 })
 
-app.get('/about',middleware,(req,res)=>{
-    res.send("Hello about ashim world")
-})
+// app.get('/about',middleware,(req,res)=>{
+//     res.send("Hello about ashim world")
+// })
 
-app.get('/contact',(req,res)=>{
-    res.cookie("ashi","ashim")
-    res.send("Hello contact ashim world")
-})
+// app.get('/api/contact',(req,res)=>{
+//     res.cookie("ashi","ashim")
+//     res.send("Hello contact ashim world")
+// })
 
 app.get('/signin',(req,res)=>{
     res.send("Hello signin")
